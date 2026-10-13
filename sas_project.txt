@@ -1,0 +1,85 @@
+
+/* Project 1: Clinical Dataset Exploration
+   Synthetic data for learning only */
+
+data clinical_data;
+    input Patient_ID Age Gender $ Diagnosis $
+          Blood_Pressure Heart_Rate;
+    datalines;
+101 25 Female Healthy 120 72
+102 45 Male Diabetes 140 88
+103 34 Female Healthy 118 76
+104 60 Male Hypertension 155 92
+105 29 Female Diabetes 130 80
+106 52 Male Healthy 125 74
+107 41 Female Hypertension 145 90
+108 37 Male Diabetes 135 82
+109 23 Female Healthy 110 70
+110 65 Male Hypertension 160 96
+;
+run;
+
+/* Display the clinical dataset */
+proc print data=clinical_data;
+    title "Synthetic Clinical Patient Records";
+run;
+
+/* Explore the structure and data types */
+proc contents data=clinical_data;
+    title "Clinical Dataset Structure";
+run;
+
+/* Generate basic descriptive statistics */
+proc means data=clinical_data mean min max std;
+    var Age Blood_Pressure Heart_Rate;
+    title "Clinical Dataset Summary Statistics";
+run;
+
+/* Check for missing values */
+proc means data=clinical_data n nmiss;
+    var Age Blood_Pressure Heart_Rate;
+    title "Missing Value Analysis";
+run;
+
+
+/* Step 2: Data Quality Checks */
+
+/* Check for duplicate patient IDs */
+proc sort data=clinical_data
+          out=sorted_clinical
+          nodupkey
+          dupout=duplicate_records;
+    by Patient_ID;
+run;
+
+title "Duplicate Patient Records";
+proc print data=duplicate_records;
+run;
+
+/* Check for invalid ages */
+data invalid_ages;
+    set clinical_data;
+    if Age < 0 or Age > 120;
+run;
+
+title "Records with Invalid Ages";
+proc print data=invalid_ages;
+run;
+
+/* Flag potentially unusual blood pressure values */
+data bp_review;
+    set clinical_data;
+    length BP_Status $20;
+
+    if Blood_Pressure < 70 or Blood_Pressure > 180 then
+        BP_Status = "Review Required";
+    else
+        BP_Status = "Within Set Range";
+run;
+
+title "Blood Pressure Quality Check";
+proc print data=bp_review;
+    var Patient_ID Blood_Pressure BP_Status;
+run;
+
+title;
