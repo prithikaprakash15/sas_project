@@ -108,8 +108,6 @@ This project is intended solely for educational purposes. The dataset is synthet
 
 ## 👩‍💻 Author
 
-**Prithika Prakash**
+Prithika Prakash
 
-Electronics and Communication Engineering Student
 
-GitHub: [Add your GitHub profile link here]
